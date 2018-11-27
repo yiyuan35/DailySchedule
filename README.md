@@ -1,2 +1,2 @@
-# DailySchedule
+# Daily Scheduler
 Backend
