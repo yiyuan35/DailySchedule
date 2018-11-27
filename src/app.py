@@ -94,38 +94,56 @@ def secret_message():
 
     return json.dumps({'message': 'You have successfully implemented sessions.'})
 
-    
 @app.route('/')
-@app.route('/api/<int:user_id>/events/')
+@app.route('/api/<int:user_id>/events/', methods=['GET'])
 def get_events(user_id):
-    """ 
-    Get all events of the user 
-    return a list of events as a json object 
-    """
+    """ Return all events of the user as a json object """
     user = User.query.filter_by(id=user_id).first()
     if user is not None:
         events = [event.serialize() for event in user.events]
-    # events = Event.query.all() 
-    # res = {'success': True, 'data': [event.serialize() for event in events]}
         return json.dumps({'success': True, 'data': events}, default=to_serializable), 200
     return json.dumps({'success': False, 'error': 'User not found.'}), 404
+
+def to_serializable(val):
+    """ Used by default. """
+    return str(val)
+
+@app.route('/api/<int:user_id>/events/<string:date>/', methods=['GET'])
+def get_events_by_date(user_id, date):
+    """ Return all events for a given date of the user """
+    user = User.query.filter_by(id=user_id).first()
+    if user is not None:
+        search_date = datetime.strptime(date, '%Y-%m-%d')
+        events = Event.query.filter_by(date = search_date)
+        result = [event.serialize() for event in events]
+        return json.dumps({'success': True, 'data': result}, default=to_serializable), 200
+    return json.dumps({'success': False, 'error': 'User not found.'}), 404
     
+@app.route('/api/<int:user_id>/events/<string:date>/order/', methods=['GET'])
+def get_events_order(user_id, date):
+    """ Return all events in an ascending/descending order for a given date of the user """
+    user = User.query.filter_by(id=user_id).first()
+    if user is not None:
+        search_date = datetime.strptime(date, '%Y-%m-%d')
+        events = Event.query.filter_by(date = search_date).order_by(Event.priority.asc())
+        result = [event.serialize() for event in events]
+        return json.dumps({'success': True, 'data': result}, default=to_serializable), 200
+    return json.dumps({'success': False, 'error': 'User not found.'}), 404
+
 @app.route('/api/<int:user_id>/events/', methods=['POST'])
 def create_event(user_id):
-    """
-    param user_id: user id
-    Create an event and return the created event for the user
-    """
+    """ Create an event and return the created event for the user """
     user = User.query.filter_by(id=user_id).first()
     if user is not None:
         post_body = json.loads(request.data)
         event = Event(
             title=post_body.get('title'),
             description=post_body.get('description'),
-            startTime=datetime.strptime(post_body.get('startTime'), '%b %d %Y %I:%M%p'), 
-            endTime=datetime.strptime(post_body.get('endTime'), '%b %d %Y %I:%M%p'), 
+            date=datetime.strptime(post_body.get('date'), '%Y-%m-%d').date(), 
+            # startTime=datetime.strptime(post_body.get('startTime'), '%b %d %Y %I:%M%p'), 
+            # endTime=datetime.strptime(post_body.get('endTime'), '%b %d %Y %I:%M%p'), 
             location=post_body.get('location'),
-            reminder=datetime.strptime(post_body.get('reminder'), '%b %d %Y %I:%M%p'), 
+            # reminder=datetime.strptime(post_body.get('reminder'), '%b %d %Y %I:%M%p'), 
             priority=post_body.get('priority'),
             user_id=user.id
         )
@@ -135,27 +153,21 @@ def create_event(user_id):
         return json.dumps({'success': True, 'data': event.serialize()}, default=to_serializable), 201
     return json.dumps({'success': False, 'error': 'User not found!'}), 404 
 
-def to_serializable(val):
-    """Used by default."""
-    return str(val)
-
 @app.route('/api/<int:user_id>/event/<int:event_id>/', methods=['POST'])
 def update_event(user_id, event_id):
-    """ 
-    param event_id: event id
-    edit an event and return the updated event information 
-    """
+    """ edit an event and return the updated event information """
     user = User.query.filter_by(id=user_id).first()
     if user is not None:
-        event = Event.query.filter_by(id=event_id).first()
+        event = Event.query.filter_by(id=event_id, user_id=user_id).first()
         if event is not None:
             post_body = json.loads(request.data)
             event.title = post_body.get('title', event.title)
             event.description = post_body.get('description', event.description)
-            event.startTime = datetime.strptime(post_body.get('startTime', event.startTime), '%b %d %Y %I:%M%p')
-            event.endTime = datetime.strptime(post_body.get('endTime', event.endTime), '%b %d %Y %I:%M%p')
+            event.date = datetime.strptime(post_body.get('date', event.date), '%Y-%m-%d').date()
+            # event.startTime = datetime.strptime(post_body.get('startTime', event.startTime), '%b %d %Y %I:%M%p')
+            # event.endTime = datetime.strptime(post_body.get('endTime', event.endTime), '%b %d %Y %I:%M%p')
             event.location = post_body.get('location', event.location)
-            event.reminder = datetime.strptime(post_body.get('reminder', event.reminder), '%b %d %Y %I:%M%p')
+            # event.reminder = datetime.strptime(post_body.get('reminder', event.reminder), '%b %d %Y %I:%M%p')
             event.priority = post_body.get('priority', event.priority)
             event.user_id = user_id
             db.session.commit()
@@ -165,13 +177,10 @@ def update_event(user_id, event_id):
 
 @app.route('/api/<int:user_id>/event/<int:event_id>/', methods=['DELETE'])
 def delete_event(user_id, event_id):
-    """ 
-    param event_id: event id
-    delete an event and return the deleted event  
-    """
+    """ delete an event and return the deleted event  """
     user = User.query.filter_by(id=user_id).first()
     if user is not None:
-        event = Event.query.filter_by(id=event_id).first() 
+        event = Event.query.filter_by(id=event_id, user_id=user_id).first() 
         if event is not None:
             db.session.delete(event)
             db.session.commit()
