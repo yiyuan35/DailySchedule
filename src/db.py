@@ -1,6 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
 import bcrypt
-import datetime
 import hashlib
 import os
 
@@ -57,23 +56,23 @@ class Event(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String, nullable=False)
     description = db.Column(db.String, nullable=True)
-    startTime = db.Column(db.DateTime, nullable=False)
-    endTime = db.Column(db.DateTime, nullable=False)
+    date = db.Column(db.DateTime, nullable=False)
+    # startTime = db.Column(db.DateTime, nullable=False)
+    # endTime = db.Column(db.DateTime, nullable=False)
     location = db.Column(db.String, nullable=True)
-    reminder = db.Column(db.DateTime, nullable=True)
+    # reminder = db.Column(db.DateTime, nullable=True)
     priority = db.Column(db.Integer, nullable=True)
-    # task id to the task it belong to
-    # task.id => table name.field name
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
     def __init__(self, **kwargs):
         self.title = kwargs.get('title', '')
         # if a title was given in parameter, then use the value or initial value which is ''
         self.description = kwargs.get('description', '')
-        self.startTime = kwargs.get('startTime', '')
-        self.endTime = kwargs.get('endTime', '')
+        self.date = kwargs.get('date', '')
+        # self.startTime = kwargs.get('startTime', '')
+        # self.endTime = kwargs.get('endTime', '')
         self.location = kwargs.get('location', '')
-        self.reminder = kwargs.get('reminder', '')
+        # self.reminder = kwargs.get('reminder', '')
         self.priority = kwargs.get('priority', 1)
 
     def serialize(self):
@@ -81,9 +80,10 @@ class Event(db.Model):
             'id': self.id,
             'title': self.title,
             'description': self.description,
-            'startTime': self.startTime,
-            'endTime': self.endTime,
+            'date': self.date,
+            # 'startTime': self.startTime,
+            # 'endTime': self.endTime,
             'location': self.location,
-            'reminder': self.reminder,
+            # 'reminder': self.reminder,
             'priority': self.priority
         }
