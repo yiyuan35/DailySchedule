@@ -40,7 +40,7 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV="/home/vm-user/dailyschedule-backend/src/venv"
+VIRTUAL_ENV="/home/vm-user/daily-scheduler-backend/src/venv"
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"

@@ -1,4 +1,4 @@
-#!/home/vm-user/dailyschedule-backend/src/venv/bin/python
+#!/home/vm-user/daily-scheduler-backend/src/venv/bin/python
 
 import sys
 import getopt

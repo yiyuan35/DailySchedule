@@ -36,7 +36,7 @@ end
 # Unset irrelevant variables.
 deactivate nondestructive
 
-set -gx VIRTUAL_ENV "/home/vm-user/dailyschedule-backend/src/venv"
+set -gx VIRTUAL_ENV "/home/vm-user/daily-scheduler-backend/src/venv"
 
 set -gx _OLD_VIRTUAL_PATH $PATH
 set -gx PATH "$VIRTUAL_ENV/bin" $PATH
