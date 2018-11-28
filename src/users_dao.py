@@ -1,6 +1,6 @@
 # data access object(DAO)
 
-from db_auth import db, User
+from db import db, User
 
 def get_user_by_email(email):
     return User.query.filter(User.email == email).first()
