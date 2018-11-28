@@ -147,11 +147,11 @@ def get_events_by_date(user_id, date):
     
 @app.route('/api/<int:user_id>/events/<string:date>/order/', methods=['GET'])
 def get_events_order(user_id, date):
-    """ Return all events in an ascending/descending order for a given date of the user """
+    """ Return all events in a descending order for a given date of the user """
     user = User.query.filter_by(id=user_id).first()
     if user is not None:
         search_date = datetime.strptime(date, '%Y-%m-%d')
-        events = Event.query.filter_by(date = search_date).order_by(Event.priority.asc())
+        events = Event.query.filter_by(date = search_date).order_by(Event.priority.desc())
         result = [event.serialize() for event in events]
         return json.dumps({'success': True, 'data': result}, default=to_serializable), 200
     return json.dumps({'success': False, 'error': 'User not found.'}), 404
