@@ -121,6 +121,9 @@ def secret_message():
     return json.dumps({'message': 'You have successfully implemented sessions.'})
 
 @app.route('/')
+def hello():
+  return "Hello World!"
+
 @app.route('/api/<int:user_id>/events/', methods=['GET'])
 def get_events(user_id):
     """ Return all events of the user as a json object """
