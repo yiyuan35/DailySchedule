@@ -98,22 +98,11 @@ def verify_session():
     return True
 
 @app.route('/')
-<<<<<<< HEAD
 def hello():
     return "Hello World"
     
 @app.route('/api/events/', methods=['GET'])
 def get_events():
-||||||| merged common ancestors
-@app.route('/api/<int:user_id>/events/', methods=['GET'])
-def get_events(user_id):
-=======
-def hello():
-  return "Hello World!"
-
-@app.route('/api/<int:user_id>/events/', methods=['GET'])
-def get_events(user_id):
->>>>>>> 812e718fead699b3d56f3543734042db9ab76201
     """ Return all events of the user as a json object """
     valid = verify_session()
     if not valid:
