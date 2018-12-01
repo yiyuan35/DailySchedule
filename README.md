@@ -14,6 +14,12 @@ We are creating a daily scheduler. The user can add events, rank them with impor
 ## Routes
 #### Get events for a given date
 Request: GET /api/events/{date}/
+Header:
+```
+{
+  "Autherization": <UPDATE TOKEN> 
+} 
+```
 Response:
 ```
 {
@@ -41,6 +47,12 @@ Response:
 
 #### Get events list in descending order for a given date
 Request: GET /api/events/{date}/order/
+Header:
+```
+{
+  "Autherization": <UPDATE TOKEN> 
+} 
+```
 Response:
 ```
 {
@@ -68,6 +80,12 @@ Response:
 
 #### Create an event
 Request: POST /api/events/
+Header:
+```
+{
+  "Autherization": <UPDATE TOKEN> 
+} 
+```
 Body:
 ```
 {
@@ -95,6 +113,12 @@ Response:
 
 #### Edit an event
 Request: POST /api/event/{event_id}/
+Header:
+```
+{
+  "Autherization": <UPDATE TOKEN> 
+} 
+```
 Body:
 ```
 {
@@ -115,8 +139,14 @@ Response:
 
 #### Delete a specific post 
 Request: DELETE /api/event/{event_id}/
+Header:
+```
+{
+  "Autherization": <UPDATE TOKEN> 
+} 
 ```
 Response: 
+```
 {
   "success": True,
   "data": <DELETED EVENT>
@@ -125,6 +155,12 @@ Response:
 
 #### Get all events
 Request: GET /api/events/
+Header:
+```
+{
+  "Autherization": <UPDATE TOKEN> 
+} 
+```
 Response:
 ```
 {
@@ -170,8 +206,8 @@ Response:
 
 #### Register
 Request: Post /register/
-```
 Body:
+```
 {
    “email”: <USER INPUT>,
    “password”: <USER INPUT>
@@ -188,8 +224,8 @@ Response:
 
 #### Update Session
 Request: Post /register/
-```
 Header:
+```
 {
   "Autherization": <UPDATE TOKEN> 
 } 
