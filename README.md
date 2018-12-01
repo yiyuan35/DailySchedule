@@ -21,6 +21,7 @@ Request: GET /api/events/{date}/order/
 #### Create an event
 Request: POST /api/events/
 Body:
+```
 {
   "title": <USER INPUT>,
   "detail": <USER INPUT>,
@@ -28,4 +29,20 @@ Body:
   “location”: <USER INPUT>,
   “importance”: <USER INPUT>
 }
+```
+
+#### Edit an event
+Request: POST /api/event/{event_id}/
+```
+Body:
+{
+  "title": <USER INPUT>,
+  "detail": <USER INPUT>,
+  “date”: <USER INPUT>,
+  “location”: <USER INPUT>,
+  “importance”: <USER INPUT>
+}
+```
+
+
 
