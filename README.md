@@ -186,7 +186,22 @@ Response:
 }
 ```
 
-
+#### Update Session
+Request: Post /register/
+```
+Header:
+{
+  "Autherization": <UPDATE TOKEN> 
+} 
+```
+Response:
+```
+{
+    "session_token": <SESSION TOKEN>,
+    "session_expiration": <SESSION EXPIRATION>,
+    "update_token": <UPDATE TOKEN>
+}
+```
 
 
 
