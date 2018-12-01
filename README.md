@@ -1,4 +1,4 @@
-# Daily Scheduler Backend
+# Daily Scheduler - Backend
 Link IOS repo: 
 
 ## Summary: 
