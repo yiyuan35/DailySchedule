@@ -11,15 +11,16 @@ def get_user_by_session_token(session_token):
 def get_user_by_update_token(update_token):
     return User.query.filter(User.update_token == update_token).first()
 
-def verify_credentials(email, userid):
+def verify_credentials(email, password):
     optional_user = get_user_by_email(email)    #check if the user associate with the email
-    
+
     if optional_user is None:
         return False, None
 
-    return optional_user.verify_userid(userid), optional_user   # also check password
+    return optional_user.verify_password(password), optional_user   # also check password
+   # also check password
 
-def create_user(email, userid):
+def create_user(email, password):
     # make the user is not already exist by email
     optional_user = get_user_by_email(email)
 
@@ -28,14 +29,14 @@ def create_user(email, userid):
 
     user = User(
         email=email,
-        userid=userid,
+        password=password,
     )
 
     db.session.add(user)
     db.session.commit()
 
     return True, user
-
+    
 def renew_session(update_token):
     # whenever the user want to renew the session, they send the update token
     user = get_user_by_update_token(update_token)
