@@ -15,6 +15,7 @@ app.config['SQLALCHEMY_ECHO'] = True
 
 db.init_app(app)
 with app.app_context():
+    # db.drop_all()
     db.create_all()
 
 def extract_token(request):
@@ -27,49 +28,67 @@ def extract_token(request):
         return False, json.dumps({'error': 'Invalid authorization header.'})
     return True, bearer_token
 
-@app.route('/')
-def hello_world():
-    return json.dumps({'message': 'Hello, World!'})
-
 @app.route('/register/', methods=['POST'])
 def register_account():
-    post_body = json.loads(request.data)
-    email = post_body.get('email')
-    password = post_body.get('password')
+    try:
+        post_body = json.loads(request.data)
+        token = post_body['id_token']
 
-    if email is None or password is None:
-        return json.dumps({'error': 'Invalid email or password'})
+        idinfo = id_token.verify_oauth2_token(token, requests.Request(), "828234084029-ci87jss5vnr5a8t9nnsaqvv5evurfegf.apps.googleusercontent.com")
+        if idinfo['iss'] not in ['accounts.google.com', 'https://accounts.google.com']:
+            raise ValueError('Wrong issuer.')
 
-    created, user = users_dao.create_user(email, password)
+        # return json.dumps(idinfo)
+        userid = idinfo['sub']
+        email = idinfo['email']
 
-    if not created:
-        return json.dumps({'error': 'User already exists.'})
+        created, user = users_dao.create_user(email, userid)
 
-    return json.dumps({
+        if email is None or userid is None:
+            return json.dumps({'error': 'Invalid email or password'})
+
+        if not created:
+            return json.dumps({'error': 'User already exists.'})
+        
+        return json.dumps({
         'session_token': user.session_token,
         'session_expiration': str(user.session_expiration),
         'update_token': user.update_token
-    })
+        })
+
+    except ValueError:
+        # return json.dumps({'error': 'Invalid user id'})
+        raise ValueError('Invalid Token')
 
 @app.route('/login/', methods=['POST'])
 def login():
-    post_body = json.loads(request.data)
-    email = post_body.get('email')
-    password = post_body.get('password')
+    try:
+        post_body = json.loads(request.data)
+        token = post_body['id_token']
+        idinfo = id_token.verify_oauth2_token(token, requests.Request(), "750288393391-qo22436ht2sgrhinj3o3lfsiivsb0s4i.apps.googleusercontent.com")
+        if idinfo['iss'] not in ['accounts.google.com', 'https://accounts.google.com']:
+            raise ValueError('Wrong issuer.')
+        
+        # return json.dumps(idinfo)
+        userid = idinfo['sub']
+        email = idinfo['email']
+        # if email is None or userid is None:
+        #     return json.dumps({'error': 'Invalid email or password'})
 
-    if email is None or password is None:
-        return json.dumps({'error': 'Invalid email or password'})
+        success, user = users_dao.verify_credentials(email, userid)
+        
+        if not success:
+            return json.dumps({'error': 'Incorrect email or password.'})
+        
+        return json.dumps({
+            'session_token': user.session_token,
+            'session_expiration': str(user.session_expiration),
+            'update_token': user.update_token
+        })
 
-    success, user = users_dao.verify_credentials(email, password)
-
-    if not success:
-        return json.dumps({'error': 'Incorrect email or password.'})
-
-    return json.dumps({
-        'session_token': user.session_token,
-        'session_expiration': str(user.session_expiration),
-        'update_token': user.update_token
-    })
+    except ValueError:
+        # return json.dumps({'error': 'Invalid user id'})
+        raise ValueError('Invalid Token')
 
 @app.route('/session/', methods=['POST'])
 def update_session():
@@ -99,7 +118,7 @@ def verify_session():
 
 @app.route('/')
 def hello():
-    return "Hello World"
+    return "Hello World!"
     
 @app.route('/api/events/', methods=['GET'])
 def get_events():
@@ -186,9 +205,8 @@ def update_event(event_id):
         return json.dumps({'success': False, 'error':'Invalid session_token'})
     success, session_token = extract_token(request)
     user = users_dao.get_user_by_session_token(session_token)
-    user_id = user.id
     if user is not None:
-        event = Event.query.filter_by(id=event_id, user_id=user_id).first()
+        event = Event.query.filter_by(id=event_id, user_id=user.id).first()
         if event is not None:
             post_body = json.loads(request.data)
             event.title = post_body.get('title', event.title)
@@ -213,9 +231,8 @@ def delete_event(event_id):
         return json.dumps({'success': False, 'error':'Invalid session_token'})
     success, session_token = extract_token(request)
     user = users_dao.get_user_by_session_token(session_token)
-    user_id = user.id
     if user is not None:
-        event = Event.query.filter_by(id=event_id, user_id=user_id).first() 
+        event = Event.query.filter_by(id=event_id, user_id=user.id).first() 
         if event is not None:
             db.session.delete(event)
             db.session.commit()

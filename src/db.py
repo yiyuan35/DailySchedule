@@ -1,5 +1,4 @@
 from flask_sqlalchemy import SQLAlchemy
-import datetime
 import bcrypt
 import hashlib
 import datetime
@@ -12,8 +11,8 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     # User information
     email = db.Column(db.String, nullable=False, unique=True)
-    password_digest = db.Column(db.String, nullable=False)
- 
+    userid = db.Column(db.String, nullable = False)
+    # password_digest = db.Column(db.String, nullable=False)
     # Session information
     session_token = db.Column(db.String, nullable=False, unique=True)
     session_expiration = db.Column(db.DateTime, nullable=False)
@@ -26,8 +25,7 @@ class User(db.Model):
         # takes input for password nad encodes
         # self.password_digest = bcrypt.hashpw(kwargs.get('password').encode('utf8'),
         #                                     bcrypt.gensalt(rounds=13))
-        self.password_digest = bcrypt.hashpw(kwargs.get('password').encode('utf8'),
-                                            bcrypt.gensalt(rounds=13))
+        self.userid = kwargs.get('userid')
         self.renew_session()
 
     # Used to randomly generate session/update tokens
@@ -47,17 +45,14 @@ class User(db.Model):
     #     return bcrypt.checkpw(password.encode('utf8'),
     #                           self.password_digest)
 
-    def verify_password(self, password):
-        # check password given with the encypted password
-        return bcrypt.checkpw(password.encode('utf8'),
-                              self.password_digest)
-
+    def verify_userid(self, userid):
+        return userid == self.userid
 
     # Checks if session token is valid and hasn't expired
     def verify_session_token(self, session_token):
         return session_token == self.session_token and \
             datetime.datetime.now() < self.session_expiration   #check not expired
-            
+
     def verify_update_token(self, update_token):
         return update_token == self.update_token
 
