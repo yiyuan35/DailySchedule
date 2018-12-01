@@ -159,8 +159,16 @@ Body:
    “password”: <USER INPUT>
 }
 ```
+Response:
+```
+{
+    "session_token": <SESSION TOKEN>,
+    "session_expiration": <SESSION EXPIRATION>,
+    "update_token": <UPDATE TOKEN>
+}
+```
 
-Register
+#### Register
 Request: Post /register/
 ```
 Body:
@@ -169,6 +177,15 @@ Body:
    “password”: <USER INPUT>
 }
 ```
+Response:
+```
+{
+    "session_token": <SESSION TOKEN>,
+    "session_expiration": <SESSION EXPIRATION>,
+    "update_token": <UPDATE TOKEN>
+}
+```
+
 
 
 
