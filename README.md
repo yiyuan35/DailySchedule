@@ -191,8 +191,7 @@ Request: POST /login/
 Body:
 ```
 {
-   “email”: <USER INPUT>,
-   “password”: <USER INPUT>
+   "id_token": <GENERATED FROM GOOGLE API>
 }
 ```
 Response:
@@ -209,8 +208,7 @@ Request: Post /register/
 Body:
 ```
 {
-   “email”: <USER INPUT>,
-   “password”: <USER INPUT>
+   "id_token": <GENERATED FROM GOOGLE API>
 }
 ```
 Response:
