@@ -1,8 +1,10 @@
-# Daily Scheduler - Backend
+# Daily Scheduler 
+#### A calendar with daily events.
+Backend
 Link IOS repo: https://github.com/songyugu/daily-scheduler-ios
 
 ## Summary: 
-We are creating a daily scheduler. The user can add events, rank them with importance rate, and delete them. When they click on a event, it will open up another UIviewController where they can edit details. 
+The purpose of this app is to write down future plans. The user uses Google login to access a calendar page. After clicking on a date, the user can add events by clicking “Add” or delete events by swiping to the left. For each event list, the event title is shown on the left, and the importance of the event is shown on the right. After clicking one event, its title, detail, location, and importance is shown on another page. The user can change these four attributes.
 
 ## Functions:
 - Register and Login 
