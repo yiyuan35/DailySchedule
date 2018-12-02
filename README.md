@@ -1,5 +1,5 @@
 # Daily Scheduler - Backend
-Link IOS repo: 
+Link IOS repo: https://github.com/songyugu/daily-scheduler-ios
 
 ## Summary: 
 We are creating a daily scheduler. The user can add events, rank them with importance rate, and delete them. When they click on a event, it will open up another UIviewController where they can edit details. 
